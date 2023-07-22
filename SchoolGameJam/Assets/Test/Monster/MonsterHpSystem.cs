@@ -13,5 +13,18 @@ public class MonsterHpSystem : MonoBehaviour
     {
 
         HpText.text = Hp.ToString("F0");
+
+        if (Hp <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Weapon")
+        {
+            Hp -= PlayerAttackSystem.Instance.AttackPower;
+            
+        }
     }
 }

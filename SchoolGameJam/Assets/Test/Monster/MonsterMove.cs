@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MonsterMove : MonoBehaviour
+public class MonsterMove : MonsterBase
 {
-    public float Speed = 0.05f; //몬스터 이동 속도
+    
 
     void Update()
     {
-        MonsterMoveSystem(); //이동
+        Movement();
     }
 
-    void MonsterMoveSystem() //이동
+    public override void Movement()
     {
-        Vector3 movement = new Vector3(-Speed, 0, 0);
-        transform.Translate(movement * Time.deltaTime);
+        base.Movement();
     }
+
+
+    public override void Deasth()
+    {
+        Destroy(gameObject);
+    }
+
+   
 }
