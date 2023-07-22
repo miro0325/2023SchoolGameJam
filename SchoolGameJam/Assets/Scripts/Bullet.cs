@@ -9,14 +9,14 @@ public class Bullet : MonoBehaviour
     public float launchAngle = 45f; // 발사각 (최적값은 45도)
     public float launchSpeed = 10f; // 발사 속도
 
-    private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D rb;
     private bool isMoving = false;
 
     public void SetTargetPos(Transform target)
     {
         this.target = target;
-        //transform.DOMoveX(target.position.x, 0.4f).SetEase(Ease.OutFlash);
-        //transform.DOMoveY(target.position.y, 0.4f).SetEase(Ease.InQuad);
+        Vector2 middlePos = ((transform.position + target.position) / 2) + Vector3.up * 2;
+        StartCoroutine(ShootBulletWithBegior(transform.position, middlePos, target.position, Vector2.Distance(transform.position,target.position) * 0.05f));
         isMoving = true;
         
     }
@@ -34,46 +34,69 @@ public class Bullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isMoving)
-        {
-            if (target != null)
-            {
-                Vector3 targetDir = target.position - transform.position;
-                rb.velocity = CalculateLaunchVelocity(targetDir);
-            }
-            else
-            {
-                // target이 null인 경우 초기 속도를 설정하지 않고 발사체를 그냥 정지시킵니다.
-                rb.velocity = Vector2.zero;
-            }
+        //if (isMoving)
+        //{
+        //    if (target != null)
+        //    {
+        //        Vector3 targetDir = target.position - transform.position;
+                
+                
+        //        rb.velocity = CalculateLaunchVelocity(targetDir);
+        //    }
+        //    else
+        //    {
+        //        // target이 null인 경우 초기 속도를 설정하지 않고 발사체를 그냥 정지시킵니다.
+        //        rb.velocity = Vector2.zero;
+        //    }
            
-        }
+        //}
     }
 
-    Vector2 CalculateLaunchVelocity(Vector2 targetDir)
+    //Vector2 CalculateLaunchVelocity(Vector2 targetDir)
+    //{
+        
+    //    float projectileDistance = targetDir.y;
+        
+    //    targetDir.y = 0;
+    //    float distance = targetDir.magnitude;
+    //    float radianAngle = launchAngle * Mathf.Deg2Rad;
+    //    float g = Physics.gravity.y;
+    //    float launchVelocity = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * radianAngle));
+        
+    //    Vector2 launchVelocityXZ = targetDir.normalized * launchVelocity;
+
+        
+    //    float launchVelocityY = Mathf.Sqrt(-2 * g * projectileDistance);
+    //    Debug.Log(launchVelocity);
+
+    //    return launchVelocityXZ + Vector2.up * launchVelocityY;
+    //}
+
+
+    private Vector3 GetBegior(Vector3 startPos, Vector3 MiddlePos, Vector3 EndPos, float normalizedVal)
     {
-        
-        float projectileDistance = targetDir.y;
-        targetDir.y = 0;
-        float distance = targetDir.magnitude;
-        float radianAngle = launchAngle * Mathf.Deg2Rad;
-        float g = Physics.gravity.y;
-        float launchVelocity = Mathf.Sqrt((distance * g) / Mathf.Sin(2 * radianAngle));
-
-        
-        Vector2 launchVelocityXZ = targetDir.normalized * launchVelocity;
-
-        
-        float launchVelocityY = Mathf.Sqrt(-2 * g * projectileDistance);
-
-       
-        return launchVelocityXZ + Vector2.up * launchVelocityY;
+        var line1 = Vector3.Lerp(startPos, MiddlePos, normalizedVal);
+        var line2 = Vector3.Lerp(MiddlePos, EndPos,normalizedVal);
+        return Vector3.Lerp(line1, line2, normalizedVal);
     }
 
+    IEnumerator ShootBulletWithBegior(Vector3 startPos, Vector3 MiddlePos, Vector3 EndPos, float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            var normlizedTime = time/ duration;
+            var curPos = GetBegior(startPos, MiddlePos, target.position, normlizedTime);
+            transform.position = curPos;
+            yield return null;
+        }
+        transform.position = EndPos;
+    }
 }

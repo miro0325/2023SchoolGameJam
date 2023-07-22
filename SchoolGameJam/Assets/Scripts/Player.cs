@@ -34,11 +34,11 @@ public class Player : MonoBehaviour
             isAttack = true;
             //transform.position = point2.position;
             //transform.GetComponent<SpriteRenderer>().enabled = true;
+            StartCoroutine(ResetPos(0.45f));
             var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();   
             _b.SetTargetPos(GetNearestTarget());
             //transform.DOMoveX(point.position.x, 0.4f).SetEase(Ease.OutFlash);
             //transform.DOMoveY(point.position.y, 0.4f).SetEase(Ease.InQuad);
-            StartCoroutine(ResetPos(0.45f));
 
 
         }
@@ -50,9 +50,12 @@ public class Player : MonoBehaviour
     Transform GetNearestTarget()
     {
         float closetDistance = Mathf.Infinity;
+        if (GameManager.Instance.curEnemys.Count == 0) return null; 
         Transform target = GameManager.Instance.curEnemys[0];
+
         foreach (var t in GameManager.Instance.curEnemys)
         {
+            if(t == null) continue;
             float distanceToEnemy = Vector3.Distance(transform.position, t.position);
             Transform tar = t;
             // 현재까지 계산한 가장 가까운 적보다 더 가까운 경우 변수 업데이트
