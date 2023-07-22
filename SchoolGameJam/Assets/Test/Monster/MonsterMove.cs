@@ -24,6 +24,8 @@ public class MonsterMove : MonsterBase
 
     public override void Death()
     {
+        GameManager.Instance.currentValue++;
+        if(GameManager.Instance.currentValue < 0) GameManager.Instance.currentValue = 0;
         Destroy(gameObject);
     }
 

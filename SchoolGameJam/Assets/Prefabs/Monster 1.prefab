@@ -74,9 +74,9 @@ GameObject:
   - component: {fileID: 7160654702849321574}
   - component: {fileID: 7160654702849321573}
   - component: {fileID: 7160654702849321572}
-  - component: {fileID: -8065311772452620431}
+  - component: {fileID: -8335161501071834076}
   m_Layer: 0
-  m_Name: Monster
+  m_Name: Monster 1
   m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1896539924, guid: 8d55c0ccf9d00894e8e6b31a6e274c07, type: 3}
+  m_Sprite: {fileID: -2042777741, guid: 6b6e5c53cd00e8d46a3bf391eaadc577, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -219,7 +219,7 @@ MonoBehaviour:
   earn: 0
   earnUI: {fileID: 4839233190861253976, guid: 66a138bb9e771cc46914461fb0cef1d5, type: 3}
   offset: {x: 0, y: 1, z: 0}
---- !u!95 &-8065311772452620431
+--- !u!95 &-8335161501071834076
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -229,7 +229,7 @@ Animator:
   m_GameObject: {fileID: 7160654702849321571}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e153616002b09d647b436656e1642695, type: 2}
+  m_Controller: {fileID: 9100000, guid: 01511b4b0d153c84ba6746adf4a4e9b0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

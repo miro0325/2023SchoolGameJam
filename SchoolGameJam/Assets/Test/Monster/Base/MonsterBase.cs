@@ -17,6 +17,9 @@ public abstract class MonsterBase : MonoBehaviour
     [SerializeField] float attackCooltime = 1;
     [SerializeField] float attackRange = 2.5f;
 
+    [SerializeField] int earn;
+    [SerializeField] GameObject earnUI;
+
 
     [SerializeField] Vector3 offset;
 
@@ -71,10 +74,15 @@ public abstract class MonsterBase : MonoBehaviour
     public virtual void Damaged(int value)
     {
         Hp -= value;
-        if(Hp <= 0)
+        var ui = Instantiate(earnUI, worldCanvas);
+        ui.transform.position = transform.position;
+        ui.GetComponent<Text>().text = value.ToString();
+        if (Hp <= 0)
         {
             GameManager.Instance.curEnemys.Remove(this.transform);
             Destroy(_hpBar.gameObject);
+            GameManager.SetCoin(GameManager.GetCoin() + earn);
+            
             Death();
         }
     }
