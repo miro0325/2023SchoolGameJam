@@ -216,8 +216,9 @@ MonoBehaviour:
   hpBar: {fileID: 4251828248664604008, guid: 4f9d17bc7f9352747a325a24777dce12, type: 3}
   attackCooltime: 1
   attackRange: 2
-  earn: 0
+  earn: 100
   earnUI: {fileID: 4839233190861253976, guid: 66a138bb9e771cc46914461fb0cef1d5, type: 3}
+  deathSprite: {fileID: 21300000, guid: 08e6b5335c5fdc148a8bb63333335b8f, type: 3}
   offset: {x: 0, y: 1, z: 0}
 --- !u!95 &-9151369172378799339
 Animator:

@@ -139,7 +139,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.9716981, g: 0.47209862, b: 0.47209862, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -208,13 +208,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89ddab183779e84fb7d6c91db48eac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 1.5
+  Speed: 2
   worldCanvas: {fileID: 2469057769267284463, guid: 0628895e0f96af943bc9d0ae234a7f91, type: 3}
-  Hp: 4
+  Hp: 300
   atkDamage: 1
   hpBar: {fileID: 4251828248664604008, guid: 4f9d17bc7f9352747a325a24777dce12, type: 3}
   attackCooltime: 1
   attackRange: 3
-  earn: 0
+  earn: 160
   earnUI: {fileID: 4839233190861253976, guid: 66a138bb9e771cc46914461fb0cef1d5, type: 3}
   offset: {x: 0, y: 1, z: 0}

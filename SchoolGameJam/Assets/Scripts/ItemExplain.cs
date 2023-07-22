@@ -11,11 +11,13 @@ public class ItemExplain : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public Text explain;
 
     public string explainText;
+
+    public Vector3 offset;
     
     public void OnPointerEnter(PointerEventData eventData)
     {
         ui.gameObject.SetActive(true);
-        ui.transform.position = eventData.position;
+        ui.transform.position = transform.position + offset;
         explain.text = explainText;
     }
 

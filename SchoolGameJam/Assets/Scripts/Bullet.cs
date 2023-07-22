@@ -9,6 +9,8 @@ public class Bullet : MonoBehaviour
     public float launchAngle = 45f; // 발사각 (최적값은 45도)
     public float launchSpeed = 10f; // 발사 속도
 
+    [SerializeField] ParticleSystem hitFX;
+
     [SerializeField] private Rigidbody2D rb;
     private bool isMoving = false;
 
@@ -27,6 +29,7 @@ public class Bullet : MonoBehaviour
         {
             MonsterBase monster = collision.GetComponent<MonsterBase>();
             monster.Damaged(Player.Instance.AttackPower);
+            Instantiate(hitFX,transform.position,Quaternion.identity);
             Destroy(this.gameObject);
         }
     }

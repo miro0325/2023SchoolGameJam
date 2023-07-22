@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     public Transform SpawnPoint; //스폰포인트 위치 받아옴
     public GameObject[] MonsterPrf; //몬스터 프리팹 받아옴
 
+    public GameObject[] Skills;
+
+    public Sprite[] bgs;
+
+    public SpriteRenderer bg;
 
 
     [Header("월드 캔버스")]
@@ -88,30 +93,39 @@ public class GameManager : MonoBehaviour
         SetCoin(99999);
         foodArchi.onClick.AddListener(() =>
         {
-            if (coin >= upgradeFoodRequire * (upgradeDamage + 1) && upgradeDamage < 3)
+            if (coin >= upgradeFoodRequire + (upgradeDamage + 1) * 20 && upgradeDamage < 3)
             {
+                if (upgradeDamage == 0)
+                {
+                    Skills[2].SetActive(true);
+                    
+                }
                 upgradeDamage++;
-                SetCoin(GetCoin() - upgradeFoodRequire * (upgradeDamage + 1));
+                SetCoin(GetCoin() - upgradeFoodRequire + (upgradeDamage + 1) * 20);
                 foodArchi.GetComponent<Image>().sprite = upgradeFoodArchi[upgradeDamage - 1];
 
             }
         });
         box.onClick.AddListener(() =>
         {
-            if (coin >= upgradeBoxRequire * (upgradeSkill + 1) && upgradeSkill < 3)
+            if (coin >= upgradeBoxRequire + (upgradeSkill + 1) * 20 && upgradeSkill < 3)
             {
+                if (upgradeSkill == 0) Skills[1].SetActive(true);
+
                 upgradeSkill++;
-                SetCoin(GetCoin() - upgradeBoxRequire * (upgradeSkill + 1));
+                SetCoin(GetCoin() - upgradeBoxRequire + (upgradeSkill + 1) * 20);
                 box.GetComponent<Image>().sprite = upgradeBox[upgradeSkill - 1];
 
             }
         });
         house.onClick.AddListener(() =>
         {
-            if (coin >= upgradeHouseRequire * (upgradeSkill2 + 1) && upgradeSkill2 < 3)
+            if (coin >= upgradeHouseRequire + (upgradeSkill2 + 1) * 20 && upgradeSkill2 < 3)
             {
+                if (upgradeSkill2 == 0) Skills[0].SetActive(true);
+
                 upgradeSkill2++;
-                SetCoin(GetCoin() - upgradeHouseRequire * (upgradeSkill2 + 1));
+                SetCoin(GetCoin() - upgradeHouseRequire + (upgradeSkill2 + 1) * 20);
                 house.GetComponent<Image>().sprite = upgradeHouse[upgradeSkill2 - 1];
 
             }
@@ -166,6 +180,7 @@ public class GameManager : MonoBehaviour
             currentStage = Mathf.Clamp(currentStage + 1, 1, stageStartFillAmounts.Length);
             StartCoroutine(Wave(currentStage));
             curTime = (currentStage % 2 == 1) ? 60f : 10f; // 다음 스테이지로 넘어갔으므로 타이머를 다시 60초로 초기화
+            if(currentStage == 9) curTime = 90f;
         }
 
         // Fill Amount 업데이트
@@ -223,8 +238,8 @@ public class GameManager : MonoBehaviour
 
                     MonsterSpawn(Random.Range(0, 3));
                 }
-                yield return new WaitForSeconds(3);
-                t = 9f;
+                yield return new WaitForSeconds(1.5f);
+                t = 12f;
                 for (int i = 0; i < 15; i++)
                 {
                     float rt = Random.Range(0.5f, t);
@@ -273,14 +288,101 @@ public class GameManager : MonoBehaviour
                 blackPanel.transform.DOMoveX(5000, 0f);
 
                 blackPanel.transform.DOMoveX(-3000, 5f);
+                StartCoroutine(Delay(1, 1));
+                break;
+            case 5:
+                t = 6f;
+                for (int i = 0; i < 10; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+                    MonsterSpawn(3);
+                }
+                yield return new WaitForSeconds(3);
+                t = 12f;
+                for (int i = 0; i < 15; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(Random.Range(0, 3));
+                }
                 break;
             case 6:
                 blackPanel.transform.DOMoveX(50000, 0f);
 
                 blackPanel.transform.DOMoveX(-3000, 5f);
                 break;
+            case 7:
+                t =  20f;
+                for (int i = 0; i < 30; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+                    MonsterSpawn(3);
+                }
+                yield return new WaitForSeconds(3);
+                t = 17f;
+                for (int i = 0; i < 30; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(3);
+                }
+                
+                break;
+            case 8:
+                blackPanel.transform.DOMoveX(50000, 0f);
+                StartCoroutine(Delay(2, 1));
+                blackPanel.transform.DOMoveX(-3000, 5f);
+                break;
+            case 9:
+                t = 9f;
+                for (int i = 0; i < 15; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+                    MonsterSpawn(Random.Range(0, 3));
+                }
+                yield return new WaitForSeconds(3);
+                t = 12f;
+                for (int i = 0; i < 20; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(3);
+                }
+                yield return new WaitForSeconds(3);
+                t = 18f;
+                for (int i = 0; i < 30; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(3);
+                }
+                yield return new WaitForSeconds(3);
+                MonsterSpawn(4);
+                break;
+            case 10:
+                break;
             default:
                 break;
+        }
+
+        IEnumerator Delay(int index, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            bg.sprite = bgs[index];
         }
     }
 

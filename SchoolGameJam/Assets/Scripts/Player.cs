@@ -68,8 +68,10 @@ public class Player : MonoBehaviour
             isAttack = true;
             //transform.position = point2.position;
             //transform.GetComponent<SpriteRenderer>().enabled = true;
-            StartCoroutine(ResetPos(0.45f));
-            var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();   
+            StartCoroutine(ResetPos(0.35f));
+            var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();
+            Transform t = GetNearestTarget();
+            if (t == null) Destroy(_b.gameObject);
             _b.SetTargetPos(GetNearestTarget());
             //transform.DOMoveX(point.position.x, 0.4f).SetEase(Ease.OutFlash);
             //transform.DOMoveY(point.position.y, 0.4f).SetEase(Ease.InQuad);
@@ -159,7 +161,7 @@ public class Player : MonoBehaviour
         float closetDistance = Mathf.Infinity;
         if (GameManager.Instance.curEnemys.Count == 0) return null; 
         Transform target = GameManager.Instance.curEnemys[0];
-
+        
         foreach (var t in GameManager.Instance.curEnemys)
         {
             if(t == null) continue;

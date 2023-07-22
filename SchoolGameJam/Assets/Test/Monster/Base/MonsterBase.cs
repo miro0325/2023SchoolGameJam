@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public abstract class MonsterBase : MonoBehaviour
 {
@@ -17,8 +18,14 @@ public abstract class MonsterBase : MonoBehaviour
     [SerializeField] float attackCooltime = 1;
     [SerializeField] float attackRange = 2.5f;
 
+    bool isDeath = false;
+
     [SerializeField] int earn;
     [SerializeField] GameObject earnUI;
+
+    [SerializeField] Sprite deathSprite;
+
+    Animator animator;
 
 
     [SerializeField] Vector3 offset;
@@ -30,12 +37,18 @@ public abstract class MonsterBase : MonoBehaviour
         worldCanvas = GameManager.Instance.worldCanvas;
         _hpBar = Instantiate(hpBar, worldCanvas).transform;
         _hpBar.position = transform.position + offset;
+        animator = GetComponent<Animator>();
     }
 
     public void UIUpdate()
     {
-        _hpBar.position = transform.position + offset;
-        _hpBar.GetChild(0).GetComponent<Image>().fillAmount = (float)Hp / (float)maxHP;
+        
+        if(_hpBar != null)
+        {
+            _hpBar.position = transform.position + offset;
+            _hpBar.GetChild(0).GetComponent<Image>().fillAmount = (float)Hp / (float)maxHP;
+
+        }
     }
 
     void Update()
@@ -62,6 +75,7 @@ public abstract class MonsterBase : MonoBehaviour
 
     public virtual void Movement()
     {
+        if(isDeath) return;
         if (Vector2.Distance(transform.position, Player.Instance.transform.position) < attackRange)
         {
             Attack();
@@ -73,17 +87,31 @@ public abstract class MonsterBase : MonoBehaviour
 
     public virtual void Damaged(int value)
     {
+        if (isDeath) return;
+
         Hp -= value;
         var ui = Instantiate(earnUI, worldCanvas);
         ui.transform.position = transform.position;
         ui.GetComponent<Text>().text = value.ToString();
         if (Hp <= 0)
         {
+           isDeath = true;
             GameManager.Instance.curEnemys.Remove(this.transform);
             Destroy(_hpBar.gameObject);
             GameManager.SetCoin(GameManager.GetCoin() + earn);
-            
-            Death();
+            animator.enabled = false;
+
+            StartCoroutine(IDeath());
         }
+    }
+
+    IEnumerator IDeath()
+    {
+
+        var a = transform.GetComponent<SpriteRenderer>();
+        a.sprite = deathSprite;
+        var t = a.DOFade(0,0.6f);
+        yield return t.WaitForCompletion();
+        Death();
     }
 }
