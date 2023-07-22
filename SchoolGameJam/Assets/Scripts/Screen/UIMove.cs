@@ -15,13 +15,16 @@ public class UIMove : MonoBehaviour
     [SerializeField] Transform controlKeyPos;
     [SerializeField] Transform controlKey;
 
+    [SerializeField] Transform HousePos;
+    [SerializeField] Transform house;
+
     Coroutine coroutine;
     Coroutine coroutine2;
     Coroutine coroutine3;
     
     bool isScreenMove = true;
     bool isUIMoving = false;
-
+    Sequence finalSequence;
 
     // Start is called before the first frame update
     void Start()
@@ -41,24 +44,48 @@ public class UIMove : MonoBehaviour
         {
             isUIMoving = true;
             isScreenMove = !isScreenMove;
-            if(coroutine != null) StopCoroutine(coroutine);
-            if(coroutine2 != null) StopCoroutine(coroutine2);
-            //if (coroutine3 != null) StopCoroutine(coroutine3);
-            // bg.transform.DOMoveY(bgMovePos[(isScreenMove) ? 0 : 1], 1);
-            //ui.transform.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);
-            //coroutine3 = StartCoroutine(IIconSet(1f));
-            coroutine2 = StartCoroutine(IRectSet(1f));
-            coroutine = StartCoroutine(IBGSet(1f));
-            
-            if(!isScreenMove) controlKey.gameObject.SetActive(false);    
+            //if(coroutine != null) StopCoroutine(coroutine);
+            ui.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);
+
+            if (isScreenMove)
+            {
+                //coroutine = StartCoroutine(IIconSet(0));
+
+
+            }
+            else
+            {
+                //controlKey.gameObject.SetActive(false);
+                //ui.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);
+
+            }
+
+
+
+
+
+
+            //if (!isScreenMove)
+            //{
+            //    for(int i = 0; i < controlKey.childCount; i++)
+            //        controlKey.GetChild(i).GetComponent<Image>().DOFade(0, 0.1f); //controlKey.gameObject.SetActive(false);  
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < controlKey.childCount; i++)
+            //        controlKey.GetChild(i).GetComponent<Image>().DOFade(1, 1f);
+
+            //}
+
         }
     }
 
     IEnumerator IIconSet(float time)
     {
-        yield return new WaitForSeconds(time);
-        controlKey.localPosition = new Vector2(controlKey.localPosition.x, controlKeyPos.position.y);
-        controlKey.gameObject.SetActive(true);
+        var tween = ui.DOMoveY(700, 0.0f);
+        yield return tween.WaitForCompletion();
+        //controlKey.gameObject.SetActive(true);
+
     }
 
     IEnumerator IRectSet(float time)
@@ -69,11 +96,16 @@ public class UIMove : MonoBehaviour
         {
             t += Time.deltaTime / time;
             RectTransform rectTransform = ui.GetComponent<RectTransform>();
+            //Debug.Log((1080 + uiMovePos[(isScreenMove) ? 0 : 1]) / 1080);
+            float screenValue = (1080 + rectTransform.offsetMax.y) / 1080;
+            float screenY = 1.0f - screenValue;
+            Camera.main.rect = new Rect(0, screenY, 1, screenValue);
             rectTransform.offsetMax = Vector2.Lerp(new Vector2(rectTransform.offsetMax.x, rectTransform.offsetMax.y), new Vector2(rectTransform.offsetMax.x, uiMovePos[(isScreenMove) ? 0 : 1]), t);
             if(Vector2.Distance(new Vector2(rectTransform.offsetMax.x, rectTransform.offsetMax.y), new Vector2(rectTransform.offsetMax.x, uiMovePos[(isScreenMove) ? 0 : 1])) < 0.5f && isScreenMove) {
                 controlKey.localPosition = new Vector2(controlKey.localPosition.x, controlKeyPos.position.y);
                 controlKey.gameObject.SetActive(true);
             }
+
             yield return null;
         }
         isUIMoving = false;
