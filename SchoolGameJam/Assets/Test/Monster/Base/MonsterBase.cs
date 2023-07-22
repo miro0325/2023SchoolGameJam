@@ -17,12 +17,13 @@ public abstract class MonsterBase : MonoBehaviour
     [SerializeField] protected float curAttackCooltime = 0f;
     [SerializeField] protected float attackRange;
 
-    void Start()
+    public virtual void Start()
     {
-        
+        GameManager.Instance.curEnemys.Add(this.transform);
+
     }
 
- 
+
     void Update()
     {
         MHpText.text = Hp.ToString("F0");
@@ -35,7 +36,7 @@ public abstract class MonsterBase : MonoBehaviour
         if(curAttackCooltime >= attackCooltime)
         {
             curAttackCooltime = 0;
-            PlayerHp.Instance.PlayerHP -= atkDamage;
+            Player.Instance.hp -= atkDamage;
         }
     }
     public virtual void AttackRange()
@@ -43,11 +44,11 @@ public abstract class MonsterBase : MonoBehaviour
 
     }
 
-    public abstract void Deasth();
+    public abstract void Death();
 
     public virtual void Movement()
     {
-        if (Vector2.Distance(transform.position, PlayerHp.Instance.transform.position) < attackRange)
+        if (Vector2.Distance(transform.position, Player.Instance.transform.position) < attackRange)
         {
             Attack();
             return;
@@ -61,7 +62,8 @@ public abstract class MonsterBase : MonoBehaviour
         Hp -= value;
         if(Hp <= 0)
         {
-            Deasth();
+            GameManager.Instance.curEnemys.Remove(this.transform);
+            Death();
         }
     }
 }
