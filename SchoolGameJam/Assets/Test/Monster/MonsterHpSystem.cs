@@ -12,7 +12,7 @@ public class MonsterHpSystem : MonoBehaviour
     void Update()
     {
 
-        HpText.text = Hp.ToString("F0");
+        
 
         if (Hp <= 0)
         {

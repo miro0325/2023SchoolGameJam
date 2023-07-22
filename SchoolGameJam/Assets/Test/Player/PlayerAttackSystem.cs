@@ -1,4 +1,4 @@
-using DG.Tweening;
+//using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +19,7 @@ public class PlayerAttackSystem : MonoBehaviour
 
     bool isAttack = false;
 
-    // Start is called before the first frame update
+    
     void Start()
     {
         if (Instance == null) Instance = this;
@@ -41,10 +41,10 @@ public class PlayerAttackSystem : MonoBehaviour
             transform.position = point2.position;
             transform.GetComponent<SpriteRenderer>().enabled = true;
 
-            if (coroutine != null) StopCoroutine(coroutine);
-            transform.DOMoveX(point.position.x, 0.4f).SetEase(Ease.OutFlash);
-            transform.DOMoveY(point.position.y, 0.4f).SetEase(Ease.InQuad);
-            coroutine = StartCoroutine(ResetPos(0.45f));
+            //if (coroutine != null) StopCoroutine(coroutine);
+            //transform.DOMoveX(point.position.x, 0.4f).SetEase(Ease.OutFlash);
+            //transform.DOMoveY(point.position.y, 0.4f).SetEase(Ease.InQuad);
+            //coroutine = StartCoroutine(ResetPos(0.45f));
 
             
         }

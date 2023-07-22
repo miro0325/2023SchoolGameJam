@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class MonsterBase : MonoBehaviour
 {
     [SerializeField] protected float Speed;
     public int Hp = 5; //HP
     public int atkDamage;
+
+    public Text MHpText;
 
     protected bool isAttack = false;
 
@@ -22,7 +25,7 @@ public abstract class MonsterBase : MonoBehaviour
  
     void Update()
     {
-        
+        MHpText.text = Hp.ToString("F0");
     }
 
     public virtual void Attack()
