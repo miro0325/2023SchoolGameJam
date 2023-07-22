@@ -2,35 +2,54 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("스테이지")]
+
     public Image Stage; // Image 컴포넌트를 가리킬 변수
 
     public Text Timer; //타이머 텍스트로 표시할꺼 받아옴
+    [SerializeField] Transform blackPanel;
 
     public Transform SpawnPoint; //스폰포인트 위치 받아옴
-    public GameObject MonsterPrf; //몬스터 프리팹 받아옴
+    public GameObject[] MonsterPrf; //몬스터 프리팹 받아옴
+
+
+
+    [Header("월드 캔버스")]
 
     public Transform worldCanvas;
+    [Header("코인 텍스트")]
+
+    public Text coinText;
 
     private float curTime = 60f; //타이머 
-
+    [Header("현재 스테이지")]
     [SerializeField] private int currentStage = 1; //스테이지 값
 
     public float maxSpawnDelay = 1f; //최대 스폰 딜레이
     public float curSpawnDelay = 0; //현재 스폰 딜레이
-
+    
     private float[] stageStartFillAmounts = { 0f, 0.147f, 0.222f, 0.36f, 0.431f, 0.569f, 0.641f, 0.783f, 0.854f  }; //스테이지 Fill 시작값
     private float[] stageEndFillAmounts = { 0.147f, 0.222f, 0.36f, 0.431f, 0.569f, 0.641f, 0.783f, 0.854f, 1f }; //스테이지 Fill 엔드값
 
     private float fillAmountVelocity = 0f;
 
+    [Header("목표 몬스터 수")]
+
+
+    public int[] targetValue;
+    public int currentValue;
+
     public static GameManager Instance { get; private set; }
+    [Header("생존 몬스터")]
 
     public List<Transform> curEnemys = new List<Transform> ();
 
     // Start is called before the first frame update
+    [Header("스킬")]
 
     public int upgradeDamage = 0;
     public Button foodArchi;
@@ -46,6 +65,8 @@ public class GameManager : MonoBehaviour
     public Button house;
     public Sprite[] upgradeHouse;
     [SerializeField] int upgradeHouseRequire;
+    [Header("몬스터")]
+    [SerializeField] Sprite[] mobSprite;
 
     private static int coin;
 
@@ -116,7 +137,17 @@ public class GameManager : MonoBehaviour
             Stage = GetComponent<Image>();
 
         curTime -= Time.deltaTime; // 타이머 += 프레임
-        if(currentStage % 2 != 0) curSpawnDelay += Time.deltaTime; // 현재 스폰 딜레이 프레임따라 흐르게
+        if (currentStage % 2 != 0)
+        {
+            curSpawnDelay += Time.deltaTime; // 현재 스폰 딜레이 프레임따라 흐르게
+            if(currentValue ==  targetValue[currentStage-1] )
+            {
+                currentValue = 0;
+                currentStage = Mathf.Clamp(currentStage + 1, 1, stageStartFillAmounts.Length);
+                StartCoroutine(Wave(currentStage));
+                curTime = (currentStage % 2 == 1) ? 60f : 10f;
+            }
+        }
         if (curSpawnDelay > maxSpawnDelay && currentStage % 2 != 0) // 현재 스폰 딜레이가 최대 스폰 딜레이를 넘을때 몬스터 소환 및 스폰 딜레이 초기화 
         {
             
@@ -142,10 +173,16 @@ public class GameManager : MonoBehaviour
 
         UpdateTimerText();
 
-       
+       UpdateCoinUI();  
 
         
     }
+
+    void UpdateCoinUI()
+    {
+        coinText.text = GetCoin().ToString();
+    }
+
     private void UpdateTimerText()
     {
         if (Timer != null)
@@ -155,41 +192,99 @@ public class GameManager : MonoBehaviour
             Timer.text = formattedTime;
         }
     }
-    void MonsterSpawn()
+    void MonsterSpawn(int index)
     {
-        curEnemys.Add(Instantiate(MonsterPrf, SpawnPoint.position, SpawnPoint.rotation).transform); //몬스터프리팹 소환
+        var enemy = Instantiate(MonsterPrf[index], SpawnPoint.position, SpawnPoint.rotation);
+        //if(index == 0) enemy.GetComponent<SpriteRenderer>().sprite = mobSprite[Random.Range(0, mobSprite.Length)];
+        curEnemys.Add(enemy.transform); //몬스터프리팹 소환
     }
 
     IEnumerator Wave(int stage)
     {
-        switch(stage)
+        float t = 0;
+        switch (stage)
         {
             case 1:
-                float t = 3f;
+                 t = 3f;
                 for(int i = 0; i < 5; i++)
                 {
                     float rt = Random.Range(0.5f, t);
                     t -= rt;
                     yield return new WaitForSeconds(rt);
-                    MonsterSpawn();
+                    MonsterSpawn(Random.Range(0, 3));
                 }
                 yield return new WaitForSeconds(3);
-                t = 3f;
+                t = 6f;
+                for (int i = 0; i < 10; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(Random.Range(0, 3));
+                }
+                yield return new WaitForSeconds(3);
+                t = 9f;
+                for (int i = 0; i < 15; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(Random.Range(0, 3));
+                }
+                break;
+            case 2:
+                blackPanel.transform.DOMoveX(5000, 0f);
+
+                blackPanel.transform.DOMoveX(-3000, 5f);
+                break;
+            case 3:
+                t = 6f;
+                for (int i = 0; i < 10; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+                    MonsterSpawn(Random.Range(0, 3));
+                }
+                yield return new WaitForSeconds(3);
+                t = 12f;
+                for (int i = 0; i < 20; i++)
+                {
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
+                    MonsterSpawn(Random.Range(0,3));
+                }
+                yield return new WaitForSeconds(3);
+                t = 12f;
                 for (int i = 0; i < 5; i++)
                 {
                     float rt = Random.Range(0.5f, t);
                     t -= rt;
                     yield return new WaitForSeconds(rt);
 
-                    MonsterSpawn();
+                    MonsterSpawn(3);
                 }
+                break;
+            case 4:
+                blackPanel.transform.DOMoveX(5000, 0f);
+
+                blackPanel.transform.DOMoveX(-3000, 5f);
+                break;
+            case 6:
+                blackPanel.transform.DOMoveX(50000, 0f);
+
+                blackPanel.transform.DOMoveX(-3000, 5f);
                 break;
             default:
                 break;
         }
     }
-    
 
+   
 
 
 }
