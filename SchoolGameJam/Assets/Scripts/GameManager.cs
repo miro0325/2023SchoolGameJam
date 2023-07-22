@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     public Transform SpawnPoint; //스폰포인트 위치 받아옴
     public GameObject MonsterPrf; //몬스터 프리팹 받아옴
 
+    
+
     private float curTime = 60f; //타이머 
 
     [SerializeField] private int currentStage = 1; //스테이지 값

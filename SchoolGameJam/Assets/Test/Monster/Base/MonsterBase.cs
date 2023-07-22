@@ -6,27 +6,36 @@ using UnityEngine.UI;
 public abstract class MonsterBase : MonoBehaviour
 {
     [SerializeField] protected float Speed;
+    [SerializeField] Transform worldCanvas;
     public int Hp = 5; //HP
+    private int maxHP;
     public int atkDamage;
+    [SerializeField] protected GameObject hpBar;
+    Transform _hpBar;
+    bool isAttack = false;
+    float curAttackCooltime = 0;
+    [SerializeField] float attackCooltime = 1;
+    [SerializeField] float attackRange = 2.5f;
 
-    public Text MHpText;
 
-    protected bool isAttack = false;
-
-    [SerializeField] protected float attackCooltime = 1f;
-    [SerializeField] protected float curAttackCooltime = 0f;
-    [SerializeField] protected float attackRange;
-
+    [SerializeField] Vector3 offset;
     public virtual void Start()
     {
         GameManager.Instance.curEnemys.Add(this.transform);
-
+        maxHP = Hp;
+        _hpBar = Instantiate(hpBar, worldCanvas).transform;
+        _hpBar.position = transform.position + offset;
     }
 
+    public void UIUpdate()
+    {
+        _hpBar.position = transform.position + offset;
+        _hpBar.GetChild(0).GetComponent<Image>().fillAmount = (float)Hp / (float)maxHP;
+    }
 
     void Update()
     {
-        MHpText.text = Hp.ToString("F0");
+        
     }
 
     public virtual void Attack()

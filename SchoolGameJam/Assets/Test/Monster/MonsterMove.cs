@@ -13,6 +13,7 @@ public class MonsterMove : MonsterBase
     void Update()
     {
         Movement();
+        UIUpdate();
     }
 
     public override void Movement()

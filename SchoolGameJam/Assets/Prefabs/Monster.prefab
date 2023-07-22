@@ -209,9 +209,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 3
+  worldCanvas: {fileID: 2469057769267284463, guid: 0628895e0f96af943bc9d0ae234a7f91, type: 3}
   Hp: 4
   atkDamage: 1
-  MHpText: {fileID: 0}
+  hpBar: {fileID: 4251828248664604008, guid: 4f9d17bc7f9352747a325a24777dce12, type: 3}
   attackCooltime: 1
-  curAttackCooltime: 0
   attackRange: 3
+  offset: {x: 0, y: 1, z: 0}
