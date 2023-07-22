@@ -74,9 +74,9 @@ GameObject:
   - component: {fileID: 7160654702849321574}
   - component: {fileID: 7160654702849321573}
   - component: {fileID: 7160654702849321572}
-  - component: {fileID: -8335161501071834076}
+  - component: {fileID: -9151369172378799339}
   m_Layer: 0
-  m_Name: Monster 1
+  m_Name: Monster 4
   m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2042777741, guid: 6b6e5c53cd00e8d46a3bf391eaadc577, type: 3}
+  m_Sprite: {fileID: 918618529, guid: 05177acdb2a1ec249b674bf779e9bc29, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -209,18 +209,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b89ddab183779e84fb7d6c91db48eac7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 2
+  Speed: 2.5
   worldCanvas: {fileID: 2469057769267284463, guid: 0628895e0f96af943bc9d0ae234a7f91, type: 3}
-  Hp: 100
+  Hp: 80
   atkDamage: 1
   hpBar: {fileID: 4251828248664604008, guid: 4f9d17bc7f9352747a325a24777dce12, type: 3}
   attackCooltime: 1
   attackRange: 2
-  earn: 100
+  earn: 80
   earnUI: {fileID: 4839233190861253976, guid: 66a138bb9e771cc46914461fb0cef1d5, type: 3}
-  deathSprite: {fileID: 21300000, guid: 08e6b5335c5fdc148a8bb63333335b8f, type: 3}
   offset: {x: 0, y: 1, z: 0}
---- !u!95 &-8335161501071834076
+--- !u!95 &-9151369172378799339
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -230,7 +229,7 @@ Animator:
   m_GameObject: {fileID: 7160654702849321571}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 01511b4b0d153c84ba6746adf4a4e9b0, type: 2}
+  m_Controller: {fileID: 9100000, guid: 8850b9a2c744c3d44bf1791f7bfb3436, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
