@@ -7,13 +7,18 @@ public class Player : MonoBehaviour
 {
     public static Player Instance { get; set; }
 
+    [SerializeField] Transform worldCanvas;
+    private int maxhp;
     public int hp = 5;
+    [SerializeField]  GameObject HpBar;
+    Transform _HpBar;
 
     public Image[] skillCoolImages;
 
     public int AttackPower = 2;
     public GameObject bullet;
 
+   
 
     [SerializeField] private bool[] requireSkills;
     [SerializeField] private float[] curSkillCooltimes;
@@ -24,18 +29,37 @@ public class Player : MonoBehaviour
     Coroutine coroutine;
     bool isAttack = false;
 
+    [SerializeField] Vector3 offset;
+
     // Start is called before the first frame update
     void Start()
     {
         if (Instance == null) Instance = this;
         else Destroy(this.gameObject);
+        Debug.Log("1");
+        maxhp = hp;
+        worldCanvas = GameManager.Instance.worldCanvas;
+        _HpBar = Instantiate(HpBar, worldCanvas).transform;
+        _HpBar.position = transform.position + offset;
     }
+    
 
     // Update is called once per frame
     void Update()
     {
         PlayerAttack();
         UseSkill();
+        UIUpdate();
+
+        
+
+        
+    }
+
+    public void UIUpdate()
+    {
+        _HpBar.position = transform.position + offset;
+        _HpBar.GetChild(0).GetComponent<Image>().fillAmount = (float)hp / (float)maxhp;
     }
 
     void PlayerAttack()
@@ -55,6 +79,19 @@ public class Player : MonoBehaviour
         }
 
     }
+
+    public virtual void Damaged(int value)
+    {
+        hp -= value;
+        if (hp <= 0)
+        {
+            GameManager.Instance.curEnemys.Remove(this.transform);
+            Destroy(_HpBar.gameObject);
+            Destroy(gameObject);
+        }
+    }
+
+    
 
     void UseSkill()
     {

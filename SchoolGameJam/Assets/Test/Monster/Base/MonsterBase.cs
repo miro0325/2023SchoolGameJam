@@ -19,10 +19,12 @@ public abstract class MonsterBase : MonoBehaviour
 
 
     [SerializeField] Vector3 offset;
+
     public virtual void Start()
     {
         GameManager.Instance.curEnemys.Add(this.transform);
         maxHP = Hp;
+        worldCanvas = GameManager.Instance.worldCanvas;
         _hpBar = Instantiate(hpBar, worldCanvas).transform;
         _hpBar.position = transform.position + offset;
     }
@@ -72,6 +74,7 @@ public abstract class MonsterBase : MonoBehaviour
         if(Hp <= 0)
         {
             GameManager.Instance.curEnemys.Remove(this.transform);
+            Destroy(_hpBar.gameObject);
             Death();
         }
     }

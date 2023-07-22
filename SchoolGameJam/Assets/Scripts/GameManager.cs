@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public Transform SpawnPoint; //스폰포인트 위치 받아옴
     public GameObject MonsterPrf; //몬스터 프리팹 받아옴
 
-    
+    public Transform worldCanvas;
 
     private float curTime = 60f; //타이머 
 
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
             }
         });
     }
-    void Start()
+    void Awake()
     {
         if(Instance == null) Instance = this;
         else Destroy(this.gameObject);
