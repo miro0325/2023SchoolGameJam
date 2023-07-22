@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class MonsterMove : MonsterBase
 {
-    
+    public override void Start()
+    {
+        base.Start();
+    }
 
     void Update()
     {
@@ -18,7 +21,7 @@ public class MonsterMove : MonsterBase
     }
 
 
-    public override void Deasth()
+    public override void Death()
     {
         Destroy(gameObject);
     }

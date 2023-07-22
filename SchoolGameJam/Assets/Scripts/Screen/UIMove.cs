@@ -22,7 +22,7 @@ public class UIMove : MonoBehaviour
     Coroutine coroutine2;
     Coroutine coroutine3;
     
-    bool isScreenMove = true;
+    [SerializeField] bool isScreenMove = true;
     bool isUIMoving = false;
     Sequence finalSequence;
 
@@ -45,38 +45,7 @@ public class UIMove : MonoBehaviour
             isUIMoving = true;
             isScreenMove = !isScreenMove;
             //if(coroutine != null) StopCoroutine(coroutine);
-            ui.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);
-
-            if (isScreenMove)
-            {
-                //coroutine = StartCoroutine(IIconSet(0));
-
-
-            }
-            else
-            {
-                //controlKey.gameObject.SetActive(false);
-                //ui.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);
-
-            }
-
-
-
-
-
-
-            //if (!isScreenMove)
-            //{
-            //    for(int i = 0; i < controlKey.childCount; i++)
-            //        controlKey.GetChild(i).GetComponent<Image>().DOFade(0, 0.1f); //controlKey.gameObject.SetActive(false);  
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < controlKey.childCount; i++)
-            //        controlKey.GetChild(i).GetComponent<Image>().DOFade(1, 1f);
-
-            //}
-
+            ui.DOMoveY(uiMovePos[(isScreenMove) ? 0 : 1], 1f);  
         }
     }
 
