@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
 {
     public static Player Instance { get; set; }
 
+    public float AttackTime;
+
     [SerializeField] Transform worldCanvas;
     private int maxhp;
     public int hp = 5;
@@ -18,9 +20,13 @@ public class Player : MonoBehaviour
     public int AttackPower = 2;
     public GameObject bullet;
 
-   
+    public float damageAmount = 10f; 
+    public float skillRange = 5f; //스킬 범위
 
-    [SerializeField] private bool[] requireSkills;
+    bool isSkillUse = false;
+
+
+    public bool[] requireSkills;
     [SerializeField] private float[] curSkillCooltimes;
     [SerializeField] private float[] maxSkillCooltimes;
     [SerializeField] private bool[] useSkills;
@@ -50,8 +56,9 @@ public class Player : MonoBehaviour
         UseSkill();
         UIUpdate();
 
+        AttackTime += Time.deltaTime;
         
-
+        
         
     }
 
@@ -69,8 +76,15 @@ public class Player : MonoBehaviour
             //transform.position = point2.position;
             //transform.GetComponent<SpriteRenderer>().enabled = true;
             StartCoroutine(ResetPos(0.45f));
-            var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();   
-            _b.SetTargetPos(GetNearestTarget());
+            if(!isSkillUse)
+            {
+                var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();   
+                _b.SetTargetPos(GetNearestTarget());
+
+            } else
+            {
+                StartCoroutine(ISkillBullet());
+            }
             //transform.DOMoveX(point.position.x, 0.4f).SetEase(Ease.OutFlash);
             //transform.DOMoveY(point.position.y, 0.4f).SetEase(Ease.InQuad);
 
@@ -133,7 +147,16 @@ public class Player : MonoBehaviour
         if(!requireSkills[0] && !useSkills[0]) 
         {
             useSkills[0] = true;
+            StartCoroutine(ISkillQ());
         }
+    }
+
+    IEnumerator ISkillQ()
+    {
+        AttackPower = 50 * (1 + GameManager.Instance.upgradeDamage);
+        yield return new WaitForSeconds(5f);
+        AttackPower = 50;
+
     }
 
     void SkillW()
@@ -141,7 +164,19 @@ public class Player : MonoBehaviour
         if (!requireSkills[1] && !useSkills[1])
         {
             useSkills[1] = true;
+            StartCoroutine(ISkillW());
+
         }
+    }
+    IEnumerator ISkillW()
+    {
+       
+            foreach(var enemy in GameManager.Instance.curEnemys)
+            {
+                enemy.GetComponent<MonsterBase>().Damaged(AttackPower * 3 * (1 + GameManager.Instance.upgradeSkill));
+            }
+            yield return new WaitForSeconds(0.1f);
+        
     }
 
     void SkillE()
@@ -149,12 +184,37 @@ public class Player : MonoBehaviour
         if (!requireSkills[2] && !useSkills[2])
         {
             useSkills[2] = true;
+            isSkillUse = true;
+            StartCoroutine(ISkillE());
         }
+        //if(Input.GetKeyDown(KeyCode.E))
+        //{
+
+        //}
     }
 
+    IEnumerator ISkillE()
+    {
 
+        
+        yield return new WaitForSeconds(5f);
+        isSkillUse = false;
 
-        Transform GetNearestTarget()
+    }
+
+    IEnumerator ISkillBullet()
+    {
+
+        for(int i = 0; i < GameManager.Instance.upgradeSkill2 + 1; i++)
+        {
+            var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();
+            _b.SetTargetPos(GetNearestTarget());
+            yield return new WaitForSeconds(0.1f);
+        }
+
+    }
+
+    Transform GetNearestTarget()
     {
         float closetDistance = Mathf.Infinity;
         if (GameManager.Instance.curEnemys.Count == 0) return null; 
