@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -8,8 +9,17 @@ public class Player : MonoBehaviour
 
     public int hp = 5;
 
+    public Image[] skillCoolImages;
+
     public int AttackPower = 2;
     public GameObject bullet;
+
+
+    [SerializeField] private bool[] requireSkills;
+    [SerializeField] private float[] curSkillCooltimes;
+    [SerializeField] private float[] maxSkillCooltimes;
+    [SerializeField] private bool[] useSkills;
+
 
     Coroutine coroutine;
     bool isAttack = false;
@@ -25,6 +35,7 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayerAttack();
+        UseSkill();
     }
 
     void PlayerAttack()
@@ -45,9 +56,69 @@ public class Player : MonoBehaviour
 
     }
 
+    void UseSkill()
+    {
+        for(int i = 0; i < maxSkillCooltimes.Length; i++)
+        {
+
+            if (!useSkills[i])
+            {
+                skillCoolImages[i].fillAmount = 0;
+
+                continue;
+            }
+            curSkillCooltimes[i] = (useSkills[i]) ? curSkillCooltimes[i] + Time.deltaTime : 0;
+            skillCoolImages[i].fillAmount = (maxSkillCooltimes[i] -curSkillCooltimes[i]) / maxSkillCooltimes[i];
+
+            if(curSkillCooltimes[i] >= maxSkillCooltimes[i])
+            {
+                curSkillCooltimes[i] = 0;
+                useSkills[i] = false;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SkillQ();
+        }
+        else if (Input.GetKeyDown(KeyCode.W))
+        {
+            SkillW();
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            SkillE();
+        }
+    } 
+
     
 
-    Transform GetNearestTarget()
+    void SkillQ()
+    {
+        if(!requireSkills[0] && !useSkills[0]) 
+        {
+            useSkills[0] = true;
+        }
+    }
+
+    void SkillW()
+    {
+        if (!requireSkills[1] && !useSkills[1])
+        {
+            useSkills[1] = true;
+        }
+    }
+
+    void SkillE()
+    {
+        if (!requireSkills[2] && !useSkills[2])
+        {
+            useSkills[2] = true;
+        }
+    }
+
+
+
+        Transform GetNearestTarget()
     {
         float closetDistance = Mathf.Infinity;
         if (GameManager.Instance.curEnemys.Count == 0) return null; 
