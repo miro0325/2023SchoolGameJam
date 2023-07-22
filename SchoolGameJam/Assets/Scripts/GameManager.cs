@@ -101,6 +101,8 @@ public class GameManager : MonoBehaviour
         if(Instance == null) Instance = this;
         else Destroy(this.gameObject);
         Initialize();
+        StartCoroutine(Wave(currentStage));
+
         Stage.fillAmount = stageStartFillAmounts[currentStage];
 
     }
@@ -121,7 +123,7 @@ public class GameManager : MonoBehaviour
             curSpawnDelay = 0;
             
                    
-            MonsterSpawn();
+            //MonsterSpawn();
         }
 
         // 스테이지가 진행되는 동안 Fill Amount가 증가하도록 설정
@@ -131,6 +133,7 @@ public class GameManager : MonoBehaviour
         if (curTime <= 0f)
         {
             currentStage = Mathf.Clamp(currentStage + 1, 1, stageStartFillAmounts.Length);
+            StartCoroutine(Wave(currentStage));
             curTime = (currentStage % 2 == 1) ? 60f : 10f; // 다음 스테이지로 넘어갔으므로 타이머를 다시 60초로 초기화
         }
 
@@ -162,17 +165,26 @@ public class GameManager : MonoBehaviour
         switch(stage)
         {
             case 1:
+                float t = 3f;
                 for(int i = 0; i < 5; i++)
                 {
-                    yield return new WaitForSeconds(Random.Range(0.1f, 3 /5));
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
                     MonsterSpawn();
                 }
                 yield return new WaitForSeconds(3);
+                t = 3f;
                 for (int i = 0; i < 5; i++)
                 {
-                    yield return new WaitForSeconds(Random.Range(0.1f, 3 / 5));
+                    float rt = Random.Range(0.5f, t);
+                    t -= rt;
+                    yield return new WaitForSeconds(rt);
+
                     MonsterSpawn();
                 }
+                break;
+            default:
                 break;
         }
     }
