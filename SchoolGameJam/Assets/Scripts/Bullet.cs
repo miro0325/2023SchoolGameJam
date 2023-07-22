@@ -89,11 +89,14 @@ public class Bullet : MonoBehaviour
     IEnumerator ShootBulletWithBegior(Vector3 startPos, Vector3 MiddlePos, Vector3 EndPos, float duration)
     {
         float time = 0;
+        Vector2 targetPos = target.position;
         while (time < duration)
         {
+            if (target == null) Destroy(this.gameObject);
+            else targetPos = target.position;
             time += Time.deltaTime;
             var normlizedTime = time/ duration;
-            var curPos = GetBegior(startPos, MiddlePos, target.position, normlizedTime);
+            var curPos = GetBegior(startPos, MiddlePos, targetPos, normlizedTime);
             transform.position = curPos;
             yield return null;
         }

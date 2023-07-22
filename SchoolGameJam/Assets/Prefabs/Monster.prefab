@@ -209,8 +209,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 3
-  Hp: 10
+  Hp: 4
   atkDamage: 1
+  MHpText: {fileID: 0}
   attackCooltime: 1
   curAttackCooltime: 0
   attackRange: 3
