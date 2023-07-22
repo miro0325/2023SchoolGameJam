@@ -97,5 +97,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e9336c9219c68b40a70c85960de9470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackPower: 2
+  worldCanvas: {fileID: 0}
+  hp: 5
+  HpBar: {fileID: 0}
+  skillCoolImages: []
+  AttackPower: 50
   bullet: {fileID: 0}
+  requireSkills: 
+  curSkillCooltimes: []
+  maxSkillCooltimes: []
+  useSkills: 
+  offset: {x: 0, y: 0, z: 0}
