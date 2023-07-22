@@ -36,7 +36,6 @@ public class Player : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(this.gameObject);
-        Debug.Log("1");
         maxhp = hp;
         worldCanvas = GameManager.Instance.worldCanvas;
         _HpBar = Instantiate(HpBar, worldCanvas).transform;
