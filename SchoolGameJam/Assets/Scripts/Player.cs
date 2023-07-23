@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public float AttackTime;
 
     [SerializeField] Transform worldCanvas;
-    private int maxhp;
+    public int maxhp;
     public int hp = 5;
     [SerializeField]  GameObject HpBar;
     Transform _HpBar;
@@ -27,9 +27,9 @@ public class Player : MonoBehaviour
 
 
     public bool[] requireSkills;
-    [SerializeField] private float[] curSkillCooltimes;
+    public float[] curSkillCooltimes;
     [SerializeField] private float[] maxSkillCooltimes;
-    [SerializeField] private bool[] useSkills;
+    public bool[] useSkills;
 
 
     Coroutine coroutine;
@@ -72,6 +72,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && !isAttack)
         {
+            if (GetNearestTarget() == null) return;
+            
             isAttack = true;
             //transform.position = point2.position;
             //transform.GetComponent<SpriteRenderer>().enabled = true;
@@ -144,16 +146,16 @@ public class Player : MonoBehaviour
 
     void SkillQ()
     {
-        if(!requireSkills[0] && !useSkills[0]) 
+        if(!requireSkills[2] && !useSkills[2]) 
         {
-            useSkills[0] = true;
+            useSkills[2] = true;
             StartCoroutine(ISkillQ());
         }
     }
 
     IEnumerator ISkillQ()
     {
-        AttackPower = 50 * (1 + GameManager.Instance.upgradeDamage);
+        AttackPower = 50 * (1 + GameManager.Instance.upgradeSkill2);
         yield return new WaitForSeconds(5f);
         AttackPower = 50;
 
@@ -171,9 +173,10 @@ public class Player : MonoBehaviour
     IEnumerator ISkillW()
     {
        
-            foreach(var enemy in GameManager.Instance.curEnemys)
+            for(int i = 0; i < GameManager.Instance.curEnemys.Count; i++)
             {
-                enemy.GetComponent<MonsterBase>().Damaged(AttackPower * 3 * (1 + GameManager.Instance.upgradeSkill));
+                if(GameManager.Instance.curEnemys[i] != null)
+                GameManager.Instance.curEnemys[i].GetComponent<MonsterBase>().Damaged((int)(AttackPower * 1/2 * (1 + GameManager.Instance.upgradeSkill)));
             }
             yield return new WaitForSeconds(0.1f);
         
@@ -181,9 +184,9 @@ public class Player : MonoBehaviour
 
     void SkillE()
     {
-        if (!requireSkills[2] && !useSkills[2])
+        if (!requireSkills[0] && !useSkills[0])
         {
-            useSkills[2] = true;
+            useSkills[0] = true;
             isSkillUse = true;
             StartCoroutine(ISkillE());
         }
@@ -205,7 +208,7 @@ public class Player : MonoBehaviour
     IEnumerator ISkillBullet()
     {
 
-        for(int i = 0; i < GameManager.Instance.upgradeSkill2 + 1; i++)
+        for(int i = 0; i < GameManager.Instance.upgradeDamage + 1; i++)
         {
             var _b = Instantiate(bullet, transform.position, Quaternion.identity).GetComponent<Bullet>();
             _b.SetTargetPos(GetNearestTarget());
@@ -217,12 +220,20 @@ public class Player : MonoBehaviour
     Transform GetNearestTarget()
     {
         float closetDistance = Mathf.Infinity;
-        if (GameManager.Instance.curEnemys.Count == 0) return null; 
-        Transform target = GameManager.Instance.curEnemys[0];
-
+        if (GameManager.Instance.curEnemys.Count == 0) return null;
+        Transform target = null;
+        for(int i = 0; i < GameManager.Instance.curEnemys.Count; i++)
+        {
+            if(GameManager.Instance.curEnemys[i] == null)
+                GameManager.Instance.curEnemys.RemoveAt(i);
+        }
         foreach (var t in GameManager.Instance.curEnemys)
         {
-            if(t == null) continue;
+            if (t == null)
+            {
+                
+                continue;
+            }
             float distanceToEnemy = Vector3.Distance(transform.position, t.position);
             Transform tar = t;
             // 현재까지 계산한 가장 가까운 적보다 더 가까운 경우 변수 업데이트

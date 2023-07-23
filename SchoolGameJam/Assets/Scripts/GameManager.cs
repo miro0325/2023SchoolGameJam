@@ -42,6 +42,10 @@ public class GameManager : MonoBehaviour
 
     private float fillAmountVelocity = 0f;
 
+    [SerializeField] Text text;
+    [SerializeField] Text text2;
+    [SerializeField] Text text3;
+
     [Header("목표 몬스터 수")]
 
 
@@ -72,6 +76,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int upgradeHouseRequire;
     [Header("몬스터")]
     [SerializeField] Sprite[] mobSprite;
+    Coroutine coroutine;
 
     private static int coin;
 
@@ -90,42 +95,68 @@ public class GameManager : MonoBehaviour
 
     private void Initialize()
     {
-        SetCoin(99999);
+        
+        text.gameObject.SetActive(false);
+        text2.gameObject.SetActive(false);
+
+        text3.gameObject.SetActive(false);
+
         foodArchi.onClick.AddListener(() =>
         {
-            if (coin >= upgradeFoodRequire + (upgradeDamage + 1) * 20 && upgradeDamage < 3)
+            if (coin >= upgradeFoodRequire + (upgradeDamage ) * 100 && upgradeDamage < 3)
             {
                 if (upgradeDamage == 0)
                 {
                     Skills[2].SetActive(true);
-                    
+                    text3.gameObject.SetActive(true);
+
+                    Player.Instance.requireSkills[0] = false;
                 }
                 upgradeDamage++;
-                SetCoin(GetCoin() - upgradeFoodRequire + (upgradeDamage + 1) * 20);
+
+                text3.text = "Lv" + upgradeDamage.ToString();
+
+                SetCoin(GetCoin() - (upgradeFoodRequire + (upgradeDamage) * 100));
                 foodArchi.GetComponent<Image>().sprite = upgradeFoodArchi[upgradeDamage - 1];
 
             }
         });
         box.onClick.AddListener(() =>
         {
-            if (coin >= upgradeBoxRequire + (upgradeSkill + 1) * 20 && upgradeSkill < 3)
+            if (coin >= (upgradeBoxRequire + (upgradeSkill) * 100) && upgradeSkill < 3)
             {
-                if (upgradeSkill == 0) Skills[1].SetActive(true);
+                if (upgradeSkill == 0)
+                {
+                    Skills[1].SetActive(true);
+                    text2.gameObject.SetActive(true);
+
+                    Player.Instance.requireSkills[1] = false;
+                }
 
                 upgradeSkill++;
-                SetCoin(GetCoin() - upgradeBoxRequire + (upgradeSkill + 1) * 20);
+                text2.text = "Lv" + upgradeSkill.ToString();
+
+                SetCoin(GetCoin() - (upgradeBoxRequire + (upgradeSkill ) * 100));
                 box.GetComponent<Image>().sprite = upgradeBox[upgradeSkill - 1];
 
             }
         });
         house.onClick.AddListener(() =>
         {
-            if (coin >= upgradeHouseRequire + (upgradeSkill2 + 1) * 20 && upgradeSkill2 < 3)
+            if (coin >= upgradeHouseRequire + (upgradeSkill2 ) * 100 && upgradeSkill2 < 3)
             {
-                if (upgradeSkill2 == 0) Skills[0].SetActive(true);
+                if (upgradeSkill2 == 0)
+                {
+                    Skills[0].SetActive(true);
+                    text.gameObject.SetActive(true);
+
+                    Player.Instance.requireSkills[2] = false;
+                }
 
                 upgradeSkill2++;
-                SetCoin(GetCoin() - upgradeHouseRequire + (upgradeSkill2 + 1) * 20);
+                text.text = "Lv" + upgradeSkill2.ToString();
+
+                SetCoin(GetCoin() - (upgradeHouseRequire + (upgradeSkill2 ) * 100));
                 house.GetComponent<Image>().sprite = upgradeHouse[upgradeSkill2 - 1];
 
             }
@@ -177,8 +208,21 @@ public class GameManager : MonoBehaviour
         // 스테이지가 진행되고 Fill Amount가 끝값을 넘지 않도록 처리
         if (curTime <= 0f)
         {
+            if (currentValue < targetValue[currentStage - 1] && currentStage % 2 != 0)
+            {
+                currentStage = 1;
+                blackPanel.transform.DOMoveX(5000, 0f);
+                curTime = (currentStage % 2 == 1) ? 60f : 10f; // 다음 스테이지로 넘어갔으므로 타이머를 다시 60초로 초기화
+
+                blackPanel.transform.DOMoveX(-3000, 5f);
+                StartCoroutine(Delayed());
+                
+                return;
+            }
             currentStage = Mathf.Clamp(currentStage + 1, 1, stageStartFillAmounts.Length);
-            StartCoroutine(Wave(currentStage));
+            if (coroutine != null) StartCoroutine(Wave(currentStage));
+            if(coroutine == null)
+                coroutine = StartCoroutine(Wave(currentStage));
             curTime = (currentStage % 2 == 1) ? 60f : 10f; // 다음 스테이지로 넘어갔으므로 타이머를 다시 60초로 초기화
             if(currentStage == 9) curTime = 90f;
         }
@@ -209,9 +253,58 @@ public class GameManager : MonoBehaviour
     }
     void MonsterSpawn(int index)
     {
+        
         var enemy = Instantiate(MonsterPrf[index], SpawnPoint.position, SpawnPoint.rotation);
         //if(index == 0) enemy.GetComponent<SpriteRenderer>().sprite = mobSprite[Random.Range(0, mobSprite.Length)];
         curEnemys.Add(enemy.transform); //몬스터프리팹 소환
+    }
+
+    IEnumerator Delayed()
+    {
+        yield return new WaitForSeconds(1.5f);
+        for (int i = 0; i < GameManager.Instance.curEnemys.Count; i++)
+        {
+            if (curEnemys[i] != null)
+                curEnemys[i].GetComponent<MonsterBase>().Damaged(9999);
+
+                
+        }
+        currentValue = 0;
+        foodArchi.GetComponent<Image>().sprite = upgradeFoodArchi[3];
+        box.GetComponent<Image>().sprite = upgradeFoodArchi[3];
+        house.GetComponent<Image>().sprite = upgradeFoodArchi[3];
+        upgradeDamage = 0;
+        Player.Instance.curSkillCooltimes[0] = 0;
+        Player.Instance.curSkillCooltimes[1] = 0;
+
+        Player.Instance.curSkillCooltimes[2] = 0;
+
+        Player.Instance.useSkills[0] = false;
+        Player.Instance.useSkills[1] = false;
+
+        Player.Instance.useSkills[2] = false;
+
+        upgradeSkill = 0;
+        upgradeSkill2 = 0;
+        text.gameObject.SetActive(false);
+        text2.gameObject.SetActive(false);
+        Player.Instance.requireSkills[0] = true;
+        Player.Instance.requireSkills[1] = true;
+        Player.Instance.requireSkills[2] = true;
+
+        StartCoroutine(Delay(0, 1));
+        text3.gameObject.SetActive(false);
+        Skills[0].SetActive(false);
+        Skills[1].SetActive(false);
+
+        Skills[2].SetActive(false);
+
+        Player.Instance.hp = Player.Instance.maxhp;
+        currentStage = 1;
+        SetCoin(0);
+
+        if (coroutine == null)
+            coroutine = StartCoroutine(Wave(currentStage));
     }
 
     IEnumerator Wave(int stage)
@@ -255,7 +348,7 @@ public class GameManager : MonoBehaviour
                 blackPanel.transform.DOMoveX(-3000, 5f);
                 break;
             case 3:
-                t = 6f;
+                t = 9f;
                 for (int i = 0; i < 10; i++)
                 {
                     float rt = Random.Range(0.5f, t);
@@ -291,7 +384,8 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(Delay(1, 1));
                 break;
             case 5:
-                t = 6f;
+                t = 9f;
+                Debug.Log("Wa");
                 for (int i = 0; i < 10; i++)
                 {
                     float rt = Random.Range(0.5f, t);
@@ -324,7 +418,7 @@ public class GameManager : MonoBehaviour
                     yield return new WaitForSeconds(rt);
                     MonsterSpawn(3);
                 }
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(2);
                 t = 17f;
                 for (int i = 0; i < 30; i++)
                 {
@@ -338,8 +432,8 @@ public class GameManager : MonoBehaviour
                 break;
             case 8:
                 blackPanel.transform.DOMoveX(50000, 0f);
-                StartCoroutine(Delay(2, 1));
                 blackPanel.transform.DOMoveX(-3000, 5f);
+                StartCoroutine(Delay(2, 1));
                 break;
             case 9:
                 t = 9f;
@@ -379,14 +473,14 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        IEnumerator Delay(int index, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            bg.sprite = bgs[index];
-        }
+        
     }
 
-   
 
+    IEnumerator Delay(int index, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        bg.sprite = bgs[index];
+    }
 
 }
