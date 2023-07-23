@@ -405,7 +405,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
             case 6:
-                blackPanel.transform.DOMoveX(50000, 0f);
+                blackPanel.transform.DOMoveX(5000, 0f);
 
                 blackPanel.transform.DOMoveX(-3000, 5f);
                 break;
@@ -431,7 +431,7 @@ public class GameManager : MonoBehaviour
                 
                 break;
             case 8:
-                blackPanel.transform.DOMoveX(50000, 0f);
+                blackPanel.transform.DOMoveX(5000, 0f);
                 blackPanel.transform.DOMoveX(-3000, 5f);
                 StartCoroutine(Delay(2, 1));
                 break;
