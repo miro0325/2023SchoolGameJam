@@ -99,7 +99,7 @@ public abstract class MonsterBase : MonoBehaviour
             GameManager.Instance.curEnemys.Remove(this.transform);
             Destroy(_hpBar.gameObject);
             GameManager.SetCoin(GameManager.GetCoin() + earn);
-            animator.enabled = false;
+            if(animator !=  null) animator.enabled = false;
 
             StartCoroutine(IDeath());
         }

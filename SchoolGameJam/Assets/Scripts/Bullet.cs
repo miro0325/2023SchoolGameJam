@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
         Vector2 middlePos = ((transform.position + target.position) / 2) + Vector3.up * 2;
         StartCoroutine(ShootBulletWithBegior(transform.position, middlePos, target.position, Vector2.Distance(transform.position,target.position) * 0.05f));
         isMoving = true;
+        Destroy(this.gameObject, 2f);
         
     }
 
@@ -37,7 +38,7 @@ public class Bullet : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //rb = GetComponent<Rigidbody2D>();
+        
     }
 
     // Update is called once per frame
@@ -95,8 +96,8 @@ public class Bullet : MonoBehaviour
         Vector2 targetPos = target.position;
         while (time < duration)
         {
-            if (target == null) Destroy(this.gameObject);
-            else targetPos = target.position;
+            if (target != null) 
+                targetPos = target.position;
             time += Time.deltaTime;
             var normlizedTime = time/ duration;
             var curPos = GetBegior(startPos, MiddlePos, targetPos, normlizedTime);
